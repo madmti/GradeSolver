@@ -1,0 +1,18 @@
+{
+    "name": "Calculo Diferencial",
+    "strategy": "heaviest_focus",
+    "rules": [
+        { "type": "global_average", "target": 55, "description": "Global" },
+        {
+            "type": "min_grade_per_tag",
+            "target": 40,
+            "tag_filter": "labs",
+            "description": "Min Lab"
+        }
+    ],
+    "assessments": [
+        { "name": "Examen", "weight": 0.5, "grade": null },
+        { "name": "Lab 1", "weight": 0.25, "grade": null, "tags": ["labs"] },
+        { "name": "Lab 2", "weight": 0.25, "grade": null, "tags": ["labs"] }
+    ]
+}
