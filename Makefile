@@ -21,7 +21,7 @@ configure:
 
 run: build
 	@echo "Ejecutando CLI con test default..."
-	@./$(EXEC) test/cases/03-rules.json
+	@./$(EXEC) $(if $(input),$(input),tests/cases/03-rules.json)
 
 test: build
 	@echo "Iniciando Suite de Pruebas..."
