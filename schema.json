@@ -1,0 +1,83 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Configuración GradeSolver (Multi-Regla)",
+    "type": "object",
+    "required": ["name", "rules", "assessments"],
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "Nombre de la asignatura (ej: Química General)."
+        },
+        "strategy": {
+            "type": "string",
+            "enum": ["uniform", "heaviest_focus"],
+            "default": "uniform",
+            "description": "Estrategia de resolución:\n- 'uniform': Reparte la exigencia equitativamente.\n- 'heaviest_focus': Mantiene las notas menores al mínimo y carga la exigencia a la evaluación de mayor peso."
+        },
+        "rules": {
+            "type": "array",
+            "description": "Lista de condiciones para aprobar el ramo.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": ["type", "target"],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "global_average",
+                            "tag_average",
+                            "min_grade_per_tag"
+                        ],
+                        "description": "Tipo de regla:\n- global_average: Promedio ponderado total.\n- tag_average: Promedio ponderado solo de items con cierto tag.\n- min_grade_per_tag: Ninguna evaluación con el tag puede ser menor a esto."
+                    },
+                    "target": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "El valor objetivo (ej: 55 para promedios, 40 para notas mínimas)."
+                    },
+                    "tag_filter": {
+                        "type": "string",
+                        "description": "El tag al que aplica la regla (Requerido para tag_average y min_grade_per_tag)."
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Texto explicativo para mostrar en el CLI (ej: 'Aprobar Labs')."
+                    }
+                }
+            }
+        },
+        "assessments": {
+            "type": "array",
+            "description": "Lista de todas las evaluaciones.",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": ["name", "weight", "grade"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Nombre de la evaluación."
+                    },
+                    "weight": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Peso ponderado (ej: 0.25)."
+                    },
+                    "grade": {
+                        "type": ["number", "null"],
+                        "minimum": 0,
+                        "description": "Nota obtenida. Usa null si está pendiente."
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Etiquetas para agrupar evaluaciones (ej: ['labs', 'teorico'])."
+                    }
+                }
+            }
+        }
+    }
+}
