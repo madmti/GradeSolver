@@ -1,9 +1,9 @@
 #pragma once
-#include <nlohmann/json.hpp>
+#include "types.hpp"
 
 namespace GradeSolver {
     class Calculator {
     public:
-        nlohmann::json calculate();
+        CalculationResult calculate(const CourseConfig& config);
     };
 }
