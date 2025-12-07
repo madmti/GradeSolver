@@ -1,0 +1,13 @@
+{
+    "name": "Física Avanzada",
+    "target_grade": 55,
+    "strategy": "heaviest_focus",
+    "rules": [
+        { "type": "global_average", "target": 55, "description": "Global" }
+    ],
+    "assessments": [
+        { "name": "Quiz 1", "weight": 0.1, "grade": null },
+        { "name": "Quiz 2", "weight": 0.1, "grade": null },
+        { "name": "Examen", "weight": 0.8, "grade": null }
+    ]
+}

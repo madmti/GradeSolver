@@ -1,6 +1,6 @@
 {
-    "name": "Calculo Diferencial",
-    "strategy": "heaviest_focus",
+    "name": "Química Lab",
+    "strategy": "uniform",
     "rules": [
         { "type": "global_average", "target": 55, "description": "Global" },
         {
@@ -11,8 +11,8 @@
         }
     ],
     "assessments": [
-        { "name": "Examen", "weight": 0.5, "grade": null },
-        { "name": "Lab 1", "weight": 0.25, "grade": null, "tags": ["labs"] },
-        { "name": "Lab 2", "weight": 0.25, "grade": null, "tags": ["labs"] }
+        { "name": "Teoria", "weight": 0.6, "grade": 70.0 },
+        { "name": "Lab 1", "weight": 0.2, "grade": 100.0, "tags": ["labs"] },
+        { "name": "Lab 2", "weight": 0.2, "grade": null, "tags": ["labs"] }
     ]
 }

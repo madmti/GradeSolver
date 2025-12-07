@@ -24,3 +24,6 @@ compile_commands.json
 *.dylib
 *.exe
 !Makefile
+
+node_modules/
+__pycache__/

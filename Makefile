@@ -1,8 +1,7 @@
 BUILD_DIR = build
 EXEC = $(BUILD_DIR)/src/cli/solver_cli
-TEST_FILE = tests/input.json
 
-.PHONY: all build configure clean run help
+.PHONY: all build configure clean run test help
 
 all: build
 
@@ -21,8 +20,13 @@ configure:
 	$(MAKE) $(BUILD_DIR)/Makefile
 
 run: build
-	@echo "Ejecutando Solver..."
-	@./$(EXEC) $(TEST_FILE)
+	@echo "Ejecutando CLI con test default..."
+	@./$(EXEC) test/cases/03-rules.json
+
+test: build
+	@echo "Iniciando Suite de Pruebas..."
+	@python3 tests/run_python.py
+	@cd tests && pnpm run test;
 
 clean:
 	@echo "Limpiando build y artefactos..."
@@ -32,6 +36,7 @@ clean:
 help:
 	@echo "Opciones disponibles:"
 	@echo "  make        - Compila el proyecto (incremental)"
-	@echo "  make run    - Compila y ejecuta con $(TEST_FILE)"
+	@echo "  make test   - Ejecuta los tests de Python y Node"
+	@echo "  make run    - Ejecuta el CLI manual"
 	@echo "  make clean  - Borra la carpeta build"
 	@echo "  make configure - Fuerza la reconfiguración de CMake"

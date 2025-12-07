@@ -1,0 +1,17 @@
+{
+    "name": "tests",
+    "version": "1.0.0",
+    "main": "run_node.js",
+    "packageManager": "pnpm@10.24.0",
+    "scripts": {
+        "test": "node run_node.js"
+    },
+    "dependencies": {
+        "ffi-napi": "^4.0.3",
+        "ref-napi": "^3.0.3"
+    },
+    "engines": {
+        "node": ">=22.0.0",
+        "pnpm": ">=10.0.0"
+    }
+}

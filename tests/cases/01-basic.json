@@ -1,0 +1,12 @@
+{
+    "name": "Historia 101",
+    "target_grade": 55,
+    "strategy": "uniform",
+    "rules": [
+        { "type": "global_average", "target": 55, "description": "Aprobar" }
+    ],
+    "assessments": [
+        { "name": "Prueba 1", "weight": 0.5, "grade": 40.0 },
+        { "name": "Prueba 2", "weight": 0.5, "grade": null }
+    ]
+}
