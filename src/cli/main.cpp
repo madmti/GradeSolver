@@ -51,22 +51,7 @@ void print_header(std::string c1, std::string c2, std::string c3, int w1, int w2
     std::cout << " |" << std::endl;
 }
 
-int main(int argc, char* argv[]) {
-    if (argc < 2) return 1;
-
-    std::ifstream file(argv[1]);
-    if (!file.is_open()) {
-        std::cerr << RED << "Error abriendo archivo." << RST << std::endl;
-        return 1;
-    }
-
-    nlohmann::json j;
-    file >> j;
-    auto config = j.get<GradeSolver::CourseConfig>();
-
-    GradeSolver::Calculator calc;
-    auto result = calc.calculate(config);
-
+void print_formatted_output(const GradeSolver::CourseConfig& config, const GradeSolver::CalculationResult& result) {
     std::cout << std::endl;
     std::cout << "  " << BOLD << CYN << "ASIGNATURA: " << config.name << RST << std::endl;
 
@@ -147,6 +132,49 @@ int main(int argc, char* argv[]) {
     std::cout << "  RESULTADO: " << BOLD << status_color << result.status << RST << std::endl;
     std::cout << "  " << result.message << std::endl;
     std::cout << std::endl;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) return 1;
+
+    bool raw_output = false;
+    std::string filename;
+
+    // Parse arguments
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+        if (arg == "--raw") {
+            raw_output = true;
+        } else {
+            filename = arg;
+        }
+    }
+
+    if (filename.empty()) {
+        std::cerr << RED << "Error: No se especificó archivo." << RST << std::endl;
+        return 1;
+    }
+
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << RED << "Error abriendo archivo." << RST << std::endl;
+        return 1;
+    }
+
+    nlohmann::json j;
+    file >> j;
+    auto config = j.get<GradeSolver::CourseConfig>();
+
+    GradeSolver::Calculator calc;
+    auto result = calc.calculate(config);
+
+    if (raw_output) {
+        // Convertir CalculationResult a JSON usando la serialización automática
+        nlohmann::json output = result;
+        std::cout << output.dump() << std::endl;
+    } else {
+        print_formatted_output(config, result);
+    }
 
     return 0;
 }
