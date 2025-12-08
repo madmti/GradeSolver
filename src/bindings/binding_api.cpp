@@ -2,12 +2,25 @@
 #include <iostream>
 #include <string>
 
-extern "C" {
-    void solve_process(const char* input_json_raw) {
-        try {
-            if (input_json_raw == nullptr) return;
-            std::string input_json(input_json_raw);
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#else
+#define EMSCRIPTEN_KEEPALIVE
+#endif
 
+extern "C" {
+    EMSCRIPTEN_KEEPALIVE
+    const char* solve_process(const char* input_json_raw) {
+        static std::string output_buffer;
+
+        output_buffer.clear();
+
+        try {
+            if (input_json_raw == nullptr) {
+                return "{}";
+            }
+
+            std::string input_json(input_json_raw);
             auto j_in = nlohmann::json::parse(input_json);
 
             auto config = j_in.get<GradeSolver::CourseConfig>();
@@ -16,13 +29,19 @@ extern "C" {
             auto result = calc.calculate(config);
 
             nlohmann::json j_out = result;
-            std::cout << j_out.dump() << std::endl;
+
+            output_buffer = j_out.dump();
 
         } catch (const std::exception& e) {
             nlohmann::json err;
             err["status"] = "error";
             err["message"] = e.what();
-            std::cout << err.dump() << std::endl;
+
+            output_buffer = err.dump();
+
+            std::cerr << "[WASM Error] " << e.what() << std::endl;
         }
+
+        return output_buffer.c_str();
     }
 }
