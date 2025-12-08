@@ -1,6 +1,6 @@
 {
+    "$schema": "https://raw.githubusercontent.com/madmti/GradeSolver/main/schema.json",
     "name": "Historia 101",
-    "target_grade": 55,
     "strategy": "uniform",
     "rules": [
         { "type": "global_average", "target": 55, "description": "Aprobar" }

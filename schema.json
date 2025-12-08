@@ -44,7 +44,17 @@
                         "type": "string",
                         "description": "Texto explicativo para mostrar en el CLI (ej: 'Aprobar Labs')."
                     }
-                }
+                },
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": { "type": { "enum": ["tag_average", "min_grade_per_tag"] } }
+                        },
+                        "then": {
+                            "required": ["tag_filter"]
+                        }
+                    }
+                ]
             }
         },
         "assessments": {
@@ -74,6 +84,7 @@
                         "items": {
                             "type": "string"
                         },
+                        "default": [],
                         "description": "Etiquetas para agrupar evaluaciones (ej: ['labs', 'teorico'])."
                     }
                 }

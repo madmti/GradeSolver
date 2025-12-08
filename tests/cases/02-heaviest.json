@@ -1,6 +1,6 @@
 {
+    "$schema": "https://raw.githubusercontent.com/madmti/GradeSolver/main/schema.json",
     "name": "Física Avanzada",
-    "target_grade": 55,
     "strategy": "heaviest_focus",
     "rules": [
         { "type": "global_average", "target": 55, "description": "Global" }
