@@ -1,0 +1,26 @@
+{
+    "$schema": "https://raw.githubusercontent.com/madmti/GradeSolver/main/schema.json",
+    "name": "Física Cuántica",
+    "strategy": "uniform",
+    "rules": [
+        { "type": "global_average", "target": 60, "description": "Promedio Global" },
+        {
+            "type": "min_grade_per_tag",
+            "target": 50,
+            "tag_filter": "examenes",
+            "description": "Mínimo Examen"
+        },
+        {
+            "type": "tag_average",
+            "target": 80,
+            "tag_filter": "labs",
+            "description": "Promedio Labs"
+        }
+    ],
+    "assessments": [
+        { "name": "Teoria", "weight": 0.4, "grade": 85.0 },
+        { "name": "Examen 1", "weight": 0.3, "grade": 50.0, "tags": ["examenes"] },
+        { "name": "Lab 1", "weight": 0.15, "grade": 45.0, "tags": ["labs"] },
+        { "name": "Lab 2", "weight": 0.15, "grade": null, "tags": ["labs"] }
+    ]
+}
