@@ -113,18 +113,52 @@ void print_formatted_output(const GradeSolver::CourseConfig& config, const Grade
 
     print_separator(total_width);
 
-    std::cout << "  | ";
-    print_cell("SCORE GLOBAL", w_name);
-    std::cout << " | ";
-    print_cell(" ", w_weight);
-    std::cout << " | ";
+    // Mostrar score global calculado desde reglas
+    for (const auto& rule_status : result.rule_statuses) {
+        if (rule_status.type == GradeSolver::RuleType::GLOBAL_AVERAGE) {
+            std::cout << "  | ";
+            print_cell("SCORE GLOBAL", w_name);
+            std::cout << " | ";
+            print_cell(" ", w_weight);
+            std::cout << " | ";
 
-    std::stringstream ss_glob;
-    ss_glob << std::fixed << std::setprecision(1) << result.current_global_score;
-    print_cell(ss_glob.str(), w_grade, true);
-    std::cout << " |" << std::endl;
+            std::stringstream ss_glob;
+            ss_glob << std::fixed << std::setprecision(1) << rule_status.current_score;
+            print_cell(ss_glob.str(), w_grade, true);
+            std::cout << " |" << std::endl;
+            break;
+        }
+    }
 
     print_separator(total_width);
+
+    // Mostrar estado de las reglas
+    std::cout << std::endl;
+    std::cout << "  " << BOLD << "ESTADO DE REGLAS:" << RST << std::endl;
+    for (const auto& rule_status : result.rule_statuses) {
+        std::string rule_name;
+        if (rule_status.type == GradeSolver::RuleType::GLOBAL_AVERAGE) {
+            rule_name = "Promedio Global";
+        } else if (rule_status.type == GradeSolver::RuleType::TAG_AVERAGE) {
+            rule_name = "Promedio [" + rule_status.tag_filter.value_or("") + "]";
+        } else if (rule_status.type == GradeSolver::RuleType::MIN_GRADE_PER_TAG) {
+            rule_name = "Mínimo [" + rule_status.tag_filter.value_or("") + "]";
+        }
+
+        std::string status_color = rule_status.status == "impossible" ? RED : 
+                                 (rule_status.status == "guaranteed" ? GRN : YEL);
+
+        std::cout << "   " << rule_name << ": " << BOLD << status_color << rule_status.status << RST;
+        
+        if (rule_status.type != GradeSolver::RuleType::MIN_GRADE_PER_TAG) {
+            std::stringstream ss;
+            ss << std::fixed << std::setprecision(1) << rule_status.current_score;
+            std::cout << " (" << ss.str() << "/" << rule_status.target << ")";
+        } else {
+            std::cout << " (Min: " << rule_status.target << ")";
+        }
+        std::cout << std::endl;
+    }
 
     std::cout << std::endl;
     std::string status_color = result.status == "impossible" ? RED : (result.status == "guaranteed" ? GRN : YEL);
