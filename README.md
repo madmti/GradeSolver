@@ -60,3 +60,78 @@ Se puede usar la opcion `--raw` para obtener una salida en JSON sin formato.
 ```bash
 ./build/src/cli/solver_cli <archivo_entrada.json> --raw
 ```
+
+### Salida del CLI
+
+El CLI puede mostrar la información de dos formas:
+
+#### 1. Salida Formateada (por defecto)
+Muestra una tabla ASCII con colores que incluye:
+- **Encabezado:** Nombre de la asignatura y reglas activas
+- **Tabla de evaluaciones:** Con nombres, pesos, notas actuales y proyectadas
+- **Score global:** Calculado a partir de las reglas
+- **Estado de reglas:** Estado individual de cada regla configurada
+- **Resultado final:** Estado general y regla limitante
+
+**Ejemplo:**
+```
+  ASIGNATURA: Química Lab
+  Reglas Activas:
+   - Global (Meta: 55)
+   - Min Lab (Meta: 40)
+
+  +---------------------------------------------------------------+
+  | Evaluacion [Tags]                   |     Peso |         Nota |
+  +---------------------------------------------------------------+
+  | Teoria                              |     0.60 |         70.0 |
+  | Lab 1 [labs]                        |     0.20 |        100.0 |
+  | Lab 2 [labs]                        |     0.20 |   40.0 (Est) |
+  +---------------------------------------------------------------+
+  | SCORE GLOBAL                        |          |         62.0 |
+  +---------------------------------------------------------------+
+
+  ESTADO DE REGLAS:
+   Promedio Global: guaranteed (62.0/55)
+   Mínimo [labs]: possible (Min: 40)
+
+  RESULTADO: possible
+  Limitante principal: Min Lab
+```
+
+#### 2. Salida Raw JSON (`--raw`)
+Devuelve el objeto `CalculationResult` completo en formato JSON para consumo programático:
+
+```json
+{
+  "strategy_used": "Uniforme Multi-Objetivo",
+  "status": "possible",
+  "message": "Limitante principal: Min Lab",
+  "limiting_rule_description": "Min Lab",
+  "rule_statuses": [
+    {
+      "type": "global_average",
+      "current_score": 62.0,
+      "target": 55.0,
+      "status": "guaranteed",
+      "tag_filter": null
+    },
+    {
+      "type": "min_grade_per_tag",
+      "current_score": 0.0,
+      "target": 40.0,
+      "status": "possible",
+      "tag_filter": "labs"
+    }
+  ],
+  "proposed_grades": {
+    "Lab 2": 40.0
+  }
+}
+```
+
+**Estados posibles:**
+- `"guaranteed"`: La regla ya se cumple con las notas actuales
+- `"impossible"`: Imposible de cumplir incluso con notas perfectas
+- `"possible"`: Puede cumplirse con las notas propuestas
+
+> **Nota:** El input del ejemplo se encuentra en `tests/cases/03-rules-possible.json`.
