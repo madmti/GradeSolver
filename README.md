@@ -54,3 +54,9 @@ Una vez compilado, puedes usar el ejecutable directamente con un archivo JSON de
 **Comando:**
 ```bash
 ./build/src/cli/solver_cli <archivo_entrada.json>
+```
+
+Se puede usar la opcion `--raw` para obtener una salida en JSON sin formato.
+```bash
+./build/src/cli/solver_cli <archivo_entrada.json> --raw
+```
