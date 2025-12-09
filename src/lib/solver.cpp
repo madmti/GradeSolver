@@ -180,19 +180,137 @@ namespace GradeSolver {
         res.limiting_rule_description = limit_rule;
     }
 
+    std::vector<RuleStatus> Calculator::calculate_rule_statuses(const CourseConfig& config, const std::map<std::string, double>& proposed_grades) {
+        std::vector<RuleStatus> statuses;
+        
+        for (const auto& rule : config.rules) {
+            RuleStatus status;
+            status.type = rule.type;
+            status.target = rule.target;
+            status.tag_filter = rule.tag_filter;
+            
+            if (rule.type == RuleType::GLOBAL_AVERAGE) {
+                // Calcular score actual (ponderado)
+                double current_points = 0.0;
+                double total_weight = 0.0;
+                
+                for (const auto& assessment : config.assessments) {
+                    total_weight += assessment.weight;
+                    if (assessment.grade.has_value()) {
+                        current_points += assessment.grade.value() * assessment.weight;
+                    }
+                }
+                
+                status.current_score = (total_weight > 0) ? (current_points / total_weight) : 0.0;
+                
+                // Calcular score proyectado con proposed_grades
+                double projected_points = current_points;
+                for (const auto& assessment : config.assessments) {
+                    if (!assessment.grade.has_value()) {
+                        auto it = proposed_grades.find(assessment.name);
+                        if (it != proposed_grades.end()) {
+                            projected_points += it->second * assessment.weight;
+                        }
+                    }
+                }
+                
+                double projected_score = (total_weight > 0) ? (projected_points / total_weight) : 0.0;
+                
+                if (status.current_score >= status.target - 0.001) {
+                    status.status = "guaranteed";
+                } else if (projected_score < status.target - 0.001) {
+                    status.status = "impossible";
+                } else {
+                    status.status = "possible";
+                }
+                
+            } else if (rule.type == RuleType::TAG_AVERAGE) {
+                // Calcular score actual (promedio aritmético)
+                double current_sum = 0.0;
+                int count_with_grade = 0;
+                int total_count = 0;
+                
+                for (const auto& assessment : config.assessments) {
+                    if (rule.tag_filter.has_value() && has_tag(assessment, rule.tag_filter.value())) {
+                        total_count++;
+                        if (assessment.grade.has_value()) {
+                            current_sum += assessment.grade.value();
+                            count_with_grade++;
+                        }
+                    }
+                }
+                
+                status.current_score = (count_with_grade > 0) ? (current_sum / count_with_grade) : 0.0;
+                
+                // Calcular score proyectado
+                double projected_sum = current_sum;
+                for (const auto& assessment : config.assessments) {
+                    if (rule.tag_filter.has_value() && has_tag(assessment, rule.tag_filter.value()) && !assessment.grade.has_value()) {
+                        auto it = proposed_grades.find(assessment.name);
+                        if (it != proposed_grades.end()) {
+                            projected_sum += it->second;
+                        }
+                    }
+                }
+                
+                double projected_score = (total_count > 0) ? (projected_sum / total_count) : 0.0;
+                
+                if (count_with_grade == total_count && status.current_score >= status.target - 0.001) {
+                    status.status = "guaranteed";
+                } else if (projected_score < status.target - 0.001) {
+                    status.status = "impossible";
+                } else {
+                    status.status = "possible";
+                }
+                
+            } else if (rule.type == RuleType::MIN_GRADE_PER_TAG) {
+                // Verificar cada evaluación individual
+                bool all_satisfied = true;
+                bool any_impossible = false;
+                status.current_score = 0.0; // No aplica para este tipo
+                
+                for (const auto& assessment : config.assessments) {
+                    if (rule.tag_filter.has_value() && has_tag(assessment, rule.tag_filter.value())) {
+                        if (assessment.grade.has_value()) {
+                            if (assessment.grade.value() < status.target - 0.001) {
+                                any_impossible = true;
+                                break;
+                            }
+                        } else {
+                            all_satisfied = false;
+                            auto it = proposed_grades.find(assessment.name);
+                            if (it != proposed_grades.end() && it->second > 100.0) {
+                                any_impossible = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                if (any_impossible) {
+                    status.status = "impossible";
+                } else if (all_satisfied) {
+                    status.status = "guaranteed";
+                } else {
+                    status.status = "possible";
+                }
+            }
+            
+            statuses.push_back(status);
+        }
+        
+        return statuses;
+    }
+
     CalculationResult Calculator::calculate(const CourseConfig& config) {
         CalculationResult res;
-
-        res.current_global_score = 0.0;
-        for(const auto& a : config.assessments) {
-            if(a.grade.has_value()) res.current_global_score += a.grade.value() * a.weight;
-        }
 
         std::string fail_msg = check_past_failures(config, res);
         if (!fail_msg.empty()) {
             res.status = "impossible";
             res.message = fail_msg;
             for(const auto& a : config.assessments) if(!a.grade.has_value()) res.proposed_grades[a.name] = 0.0;
+            res.rule_statuses = calculate_rule_statuses(config, res.proposed_grades);
             return res;
         }
 
@@ -201,6 +319,9 @@ namespace GradeSolver {
         } else {
             solve_uniform(config, res);
         }
+
+        // Calcular estados de las reglas
+        res.rule_statuses = calculate_rule_statuses(config, res.proposed_grades);
 
         double max_g = 0;
         for(auto const& [name, val] : res.proposed_grades) {

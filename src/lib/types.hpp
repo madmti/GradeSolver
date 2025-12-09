@@ -58,17 +58,26 @@ namespace GradeSolver {
         std::vector<Assessment> assessments = {};
     };
 
+    struct RuleStatus {
+        RuleType type;
+        double current_score;
+        double target;
+        std::string status;
+        std::optional<std::string> tag_filter;
+    };
+
     struct CalculationResult {
         std::string strategy_used;
         std::string status;
         std::string message;
         std::string limiting_rule_description;
-        double current_global_score;
+        std::vector<RuleStatus> rule_statuses;
         std::map<std::string, double> proposed_grades;
     };
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Rule, type, target, tag_filter, description)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Assessment, name, weight, grade, tags)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(CourseConfig, name, strategy, rules, assessments)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(CalculationResult, strategy_used, status, message, current_global_score, proposed_grades, limiting_rule_description)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(RuleStatus, type, current_score, target, status, tag_filter)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(CalculationResult, strategy_used, status, message, limiting_rule_description, rule_statuses, proposed_grades)
 }
