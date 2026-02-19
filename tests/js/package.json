@@ -1,0 +1,14 @@
+{
+  "name": "gradesolver-wasm-tests",
+  "version": "2.0.0",
+  "description": "Tests for GradeSolver WASM binding",
+  "main": "test_runner.js",
+  "scripts": {
+    "test": "node test_runner.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

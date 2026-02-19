@@ -1,0 +1,48 @@
+{
+    "contexto": {
+        "nota_minima": 0.0,
+        "nota_maxima": 100.0,
+        "nota_aprobacion": 55.0
+    },
+    "S": {
+        "evaluaciones": [
+            {
+                "id": "Certamen 1",
+                "peso": 0.2,
+                "valor_actual": null,
+                "tags": ["certamen"]
+            },
+            {
+                "id": "Certamen 2",
+                "peso": 0.3,
+                "valor_actual": null,
+                "tags": ["certamen"]
+            },
+            {
+                "id": "Proyecto",
+                "peso": 0.5,
+                "valor_actual": null,
+                "tags": ["proyecto"]
+            }
+        ],
+        "restricciones": [
+            {
+                "id": "Promedio de certamenes",
+                "tipo": "PROMEDIO_SIMPLE_TAG",
+                "tag_objetivo": "certamen",
+                "valor_minimo": 40.0
+            },
+            {
+                "id": "Minimo del proyecto",
+                "tipo": "NOTA_MINIMA_INDIVIDUAL_TAG",
+                "tag_objetivo": "proyecto",
+                "valor_minimo": 30.0
+            }
+        ]
+    },
+    "P": {
+        "simulaciones": 1000,
+        "media_historica": 65.0,
+        "desviacion_estandar": 10.0
+    }
+}

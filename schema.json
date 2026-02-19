@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "GradeSolver Configuration Schema",
+    "description": "Schema para configuración de evaluaciones académicas con restricciones y simulaciones probabilísticas",
+    "type": "object",
+    "required": ["contexto", "S", "P"],
+    "properties": {
+        "contexto": {
+            "type": "object",
+            "description": "Contexto general de las calificaciones",
+            "required": ["nota_minima", "nota_maxima", "nota_aprobacion"],
+            "properties": {
+                "nota_minima": {
+                    "type": "number",
+                    "description": "Nota mínima posible en el sistema de calificación"
+                },
+                "nota_maxima": {
+                    "type": "number",
+                    "description": "Nota máxima posible en el sistema de calificación"
+                },
+                "nota_aprobacion": {
+                    "type": "number",
+                    "description": "Nota mínima para aprobar"
+                }
+            },
+            "additionalProperties": false
+        },
+        "S": {
+            "type": "object",
+            "description": "Sistema de evaluaciones y restricciones",
+            "required": ["evaluaciones", "restricciones"],
+            "properties": {
+                "evaluaciones": {
+                    "type": "array",
+                    "description": "Lista de evaluaciones del curso",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "required": ["id", "peso", "valor_actual", "tags"],
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "Identificador único de la evaluación"
+                            },
+                            "peso": {
+                                "type": "number",
+                                "description": "Peso de la evaluación en la nota final",
+                                "minimum": 0,
+                                "maximum": 1
+                            },
+                            "valor_actual": {
+                                "type": ["number", "null"],
+                                "description": "Valor actual de la evaluación (null si no está evaluada)"
+                            },
+                            "tags": {
+                                "type": "array",
+                                "description": "Etiquetas para agrupar evaluaciones",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "restricciones": {
+                    "type": "array",
+                    "description": "Lista de restricciones que deben cumplirse",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "id",
+                            "tipo",
+                            "tag_objetivo",
+                            "valor_minimo"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "Identificador de la restricción"
+                            },
+                            "tipo": {
+                                "type": "string",
+                                "description": "Tipo de restricción a aplicar",
+                                "enum": [
+                                    "PROMEDIO_SIMPLE_TAG",
+                                    "NOTA_MINIMA_INDIVIDUAL_TAG"
+                                ]
+                            },
+                            "tag_objetivo": {
+                                "type": "string",
+                                "description": "Tag de las evaluaciones sobre las que aplica la restricción"
+                            },
+                            "valor_minimo": {
+                                "type": "number",
+                                "description": "Valor mínimo requerido para cumplir la restricción"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "P": {
+            "type": "object",
+            "description": "Parámetros para simulaciones probabilísticas",
+            "required": [
+                "simulaciones",
+                "media_historica",
+                "desviacion_estandar"
+            ],
+            "properties": {
+                "simulaciones": {
+                    "type": "integer",
+                    "description": "Número de simulaciones a realizar",
+                    "minimum": 1
+                },
+                "media_historica": {
+                    "type": "number",
+                    "description": "Media histórica de las calificaciones"
+                },
+                "desviacion_estandar": {
+                    "type": "number",
+                    "description": "Desviación estándar histórica de las calificaciones",
+                    "minimum": 0
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

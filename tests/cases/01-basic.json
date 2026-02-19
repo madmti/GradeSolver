@@ -1,0 +1,36 @@
+{
+    "contexto": {
+        "nota_minima": 0.0,
+        "nota_maxima": 100.0,
+        "nota_aprobacion": 55.0
+    },
+    "S": {
+        "evaluaciones": [
+            {
+                "id": "Certamen 1",
+                "peso": 0.5,
+                "valor_actual": null,
+                "tags": ["certamen"]
+            },
+            {
+                "id": "Certamen 2",
+                "peso": 0.5,
+                "valor_actual": null,
+                "tags": ["certamen"]
+            }
+        ],
+        "restricciones": [
+            {
+                "id": "Minimo por certamen",
+                "tipo": "NOTA_MINIMA_INDIVIDUAL_TAG",
+                "tag_objetivo": "certamen",
+                "valor_minimo": 30.0
+            }
+        ]
+    },
+    "P": {
+        "simulaciones": 1000,
+        "media_historica": 65.0,
+        "desviacion_estandar": 10.0
+    }
+}
