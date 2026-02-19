@@ -17,29 +17,7 @@ El proyecto incluye:
 ---
 
 ## Arquitectura del Sistema
-
-```
-┌─────────────┐
-│   Reglas    │──┐
-└─────────────┘  │
-                 ├──► ┌──────────────┐
-┌─────────────┐  │    │  Máquina S   │──┬──► Espacio de Soluciones
-│Evaluaciones │──┘    │  (Rangos)    │  │    (factibilidad)
-└─────────────┘       └──────────────┘  │
-                             │           │
-                             ├───────────┼──► ┌──────────────┐
-                             │           │    │  Máquina D   │──► Planes
-                             │           └────│ (Estrategias)│    (soluciones)
-                             │                └──────────────┘
-                             │                       │
-                             │                       ├──► ┌──────────────┐
-                             └───────────────────────┴────│  Máquina P   │──► Probabilidades
-                                                          │(Simulaciones)│
-                         ┌─────────────────────────┐     └──────────────┘
-                         │  Perfil estadístico     │            ▲
-                         │ (distribución histórica)│────────────┘
-                         └─────────────────────────┘
-```
+![Diagrama](./GradeSolverSchema.png)
 
 ### Máquina S - Sistema de Restricciones
 Analiza las restricciones del sistema de calificación y determina:
@@ -363,7 +341,7 @@ Para habilitar validación automática en tu editor, agrega al inicio de tu arch
 
 ```json
 {
-  "$schema": "./schema.json",
+  "$schema": "https://raw.githubusercontent.com/madmti/GradeSolver/master/schema.json",
   ...
 }
 ```
