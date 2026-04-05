@@ -1,0 +1,17 @@
+{
+    "name": "@madmti/gradesolver",
+    "description": "GradeSolver WASM binding for JavaScript",
+    "version": "1.0.0",
+    "main": "index.js",
+    "module": "index.js",
+    "types": "solver.d.ts",
+    "files": [
+        "index.js",
+        "solver.js",
+        "solver.wasm",
+        "solver.d.ts"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -36,15 +36,19 @@ echo ""
 echo "Compilando..."
 emmake make solver_wasm -j4
 
-# Crear directorio js si no existe
+# Crear directorio dist si no existe
 cd ..
-mkdir -p tests/js
+mkdir -p dist
+mkdir -p dist/js
 
-# Copiar archivos generados a la carpeta js
+# Copiar archivos generados a la carpeta dist/js
 echo ""
-echo "Copiando archivos a js/..."
-cp "$BUILD_DIR"/binding/solver.js tests/js/
-cp "$BUILD_DIR"/binding/solver.wasm tests/js/
+echo "Copiando archivos a dist/js/..."
+cp "$BUILD_DIR"/binding/solver.js dist/js/
+cp "$BUILD_DIR"/binding/solver.wasm dist/js/
+cp binding/js/solver.d.ts dist/js/solver.d.ts
+cp binding/js/index.js dist/js/index.js
+cp binding/js/package.json dist/js/package.json
 
 echo ""
 echo "======================================"
@@ -52,6 +56,8 @@ echo "Build completado exitosamente!"
 echo "======================================"
 echo ""
 echo "Archivos generados:"
-echo "  - js/solver.js"
-echo "  - js/solver.wasm"
+echo "  - dist/js/solver.js"
+echo "  - dist/js/solver.wasm"
+echo "  - dist/js/solver.d.ts"
+echo "  - dist/js/package.json"
 echo ""

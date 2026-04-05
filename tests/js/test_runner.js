@@ -25,19 +25,28 @@ async function runTests() {
     try {
         // Cargar el módulo WASM
         log(colors.cyan, 'Cargando módulo WASM...');
-        const createSolverModule = require('./solver.js');
-        const Module = await createSolverModule();
-        log(colors.green, '✓ Módulo WASM cargado correctamente\n');
+        const binding = require('../../dist/js/solver.js');
 
-        // Función para llamar al solver
-        function callSolver(inputJson) {
-            return Module.ccall(
-                'solve_process',
-                'string',
-                ['string'],
-                [inputJson]
-            );
+        let callSolver;
+        if (binding && typeof binding.solve === 'function') {
+            callSolver = async (inputJson) => {
+                const output = await binding.solve(inputJson);
+                return JSON.stringify(output);
+            };
+        } else {
+            const createSolverModule = binding;
+            const Module = await createSolverModule();
+            callSolver = async (inputJson) => {
+                return Module.ccall(
+                    'solve_process',
+                    'string',
+                    ['string'],
+                    [inputJson]
+                );
+            };
         }
+
+        log(colors.green, '✓ Módulo WASM cargado correctamente\n');
 
         // Leer todos los archivos de test
         const casesDir = path.join(__dirname, '../cases');
@@ -72,7 +81,7 @@ async function runTests() {
 
                 // Ejecutar el solver
                 const startTime = Date.now();
-                const outputJson = callSolver(inputJson);
+                const outputJson = await callSolver(inputJson);
                 const endTime = Date.now();
                 const duration = endTime - startTime;
 
