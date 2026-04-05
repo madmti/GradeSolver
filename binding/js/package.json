@@ -3,12 +3,22 @@
     "description": "GradeSolver WASM binding for JavaScript",
     "version": "1.0.0",
     "main": "index.js",
-    "module": "index.js",
+    "module": "index.mjs",
     "types": "solver.d.ts",
+    "exports": {
+        ".": {
+            "types": "./solver.d.ts",
+            "import": "./index.mjs",
+            "require": "./index.js"
+        }
+    },
     "files": [
         "index.js",
+        "index.mjs",
         "solver.js",
         "solver.wasm",
+        "solver.web.mjs",
+        "solver.web.wasm",
         "solver.d.ts"
     ],
     "publishConfig": {

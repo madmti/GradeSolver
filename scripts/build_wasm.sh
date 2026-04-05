@@ -34,7 +34,7 @@ emcmake cmake .. \
 
 echo ""
 echo "Compilando..."
-emmake make solver_wasm -j4
+emmake make solver_wasm_node solver_wasm_web -j4
 
 # Crear directorio dist si no existe
 cd ..
@@ -44,10 +44,13 @@ mkdir -p dist/js
 # Copiar archivos generados a la carpeta dist/js
 echo ""
 echo "Copiando archivos a dist/js/..."
-cp "$BUILD_DIR"/binding/solver.js dist/js/
-cp "$BUILD_DIR"/binding/solver.wasm dist/js/
+cp "$BUILD_DIR"/binding/node/solver.js dist/js/solver.js
+cp "$BUILD_DIR"/binding/node/solver.wasm dist/js/solver.wasm
+cp "$BUILD_DIR"/binding/web/solver.mjs dist/js/solver.web.mjs
+cp "$BUILD_DIR"/binding/web/solver.wasm dist/js/solver.web.wasm
 cp binding/js/solver.d.ts dist/js/solver.d.ts
 cp binding/js/index.js dist/js/index.js
+cp binding/js/index.mjs dist/js/index.mjs
 cp binding/js/package.json dist/js/package.json
 
 echo ""
@@ -58,6 +61,8 @@ echo ""
 echo "Archivos generados:"
 echo "  - dist/js/solver.js"
 echo "  - dist/js/solver.wasm"
+echo "  - dist/js/solver.web.mjs"
+echo "  - dist/js/solver.web.wasm"
 echo "  - dist/js/solver.d.ts"
 echo "  - dist/js/package.json"
 echo ""
