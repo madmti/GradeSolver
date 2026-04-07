@@ -27,6 +27,6 @@ jobs:
 
       - name: Publish to NPM
         run: |
-          cd dist/js/ npm publish --access public
+          cd dist/js/ && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
